@@ -109,10 +109,10 @@ with chart_col2:
     st.pyplot(fig2, transparent=True)
 
 # =========================
-# AI ADVICE
+# SPENDING ADVICE
 # =========================
 
-st.subheader("AI Spending Advice")
+st.subheader("Spending Advice")
 
 for category, data in results.items():
 
