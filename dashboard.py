@@ -18,6 +18,14 @@ st.set_page_config(page_title="Fimbo Financial Advisor", layout="wide")
 
 st.title("Fimbo Financial Advisor Dashboard")
 
+st.markdown(
+    """
+    Welcome back!
+
+    Here's your financial overview for this month.
+    """
+)
+
 latest_file = find_latest_excel_file(DATA_FOLDER)
 
 df = pd.read_excel(latest_file)
@@ -31,14 +39,21 @@ results, total_spent, total_budget = analyze_expenses(
 # TOP METRICS
 # =========================
 
-col1, col2 = st.columns(2)
+col1, col2, col3, col4 = st.columns(4)
 
 with col1:
-    st.metric("Total Spent", f"${total_spent:.2f}")
+    st.metric("💰 Budget", f"${total_budget:.2f}")
 
 with col2:
-    st.metric("Total Budget", f"${total_budget:.2f}")
+    st.metric("💳 Spent", f"${total_spent:.2f}")
 
+with col3:
+    remaining = total_budget - total_spent
+    st.metric("🏦 Remaining", f"${remaining:.2f}")
+
+with col4:
+    savings = (remaining / total_budget) * 100
+    st.metric("📈 Savings", f"{savings:.1f}%")
 # =========================
 # CATEGORY TABLE
 # =========================
@@ -122,9 +137,10 @@ fig3.patch.set_alpha(0)
 ax3.set_facecolor("none")
 
 ax3.plot(
-    monthly_total.index,
-    monthly_total.values,
-    marker="o"
+    monthly_total["Month Name"],
+    monthly_total["Amount"],
+    marker="o",
+    linewidth=2
 )
 
 ax3.set_ylabel("Amount ($)", color="white")
@@ -140,25 +156,30 @@ st.pyplot(fig3, transparent=True)
 
 # Monthly Category Breakdown
 
-st.subheader("Monthly Trend Advice")
+st.subheader("Monthly Trend Insights")
 
 if len(monthly_total) >= 2:
-    current_month = monthly_total.iloc[-1]
-    previous_month = monthly_total.iloc[-2]
+
+    current_month = monthly_total["Amount"].iloc[-1]
+    previous_month = monthly_total["Amount"].iloc[-2]
 
     difference = current_month - previous_month
-    percent_change = (difference / previous_month) * 100
+
+    if previous_month != 0:
+        percent_change = (difference / previous_month) * 100
+    else:
+        percent_change = 0
 
     if difference > 0:
         st.warning(
             f"Your spending increased by {percent_change:.1f}% compared to last month."
         )
-    else:
+    elif difference < 0:
         st.success(
             f"Your spending decreased by {abs(percent_change):.1f}% compared to last month."
         )
-else:
-    st.info("Not enough monthly data yet to compare trends.")
+    else:
+        st.info("Your spending stayed the same as last month.")
 
 
 
@@ -166,7 +187,7 @@ else:
 # SPENDING ADVICE
 # =========================
 
-st.subheader("Spending Advice")
+st.subheader("Spending Insights")
 
 for category, data in results.items():
 
