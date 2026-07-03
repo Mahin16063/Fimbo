@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 from config import DATA_FOLDER, BUDGETS
 from file_scanner import find_latest_excel_file
 from analyzer import analyze_expenses, analyze_monthly_trends
+from insight import generate_insights
 
 plt.rcParams.update({
     "text.color": "white",
@@ -156,30 +157,17 @@ st.pyplot(fig3, transparent=True)
 
 # Monthly Category Breakdown
 
-st.subheader("Monthly Trend Insights")
+st.subheader("Fimbo's Financial Insights")
 
-if len(monthly_total) >= 2:
+insights = generate_insights(
+    results,
+    total_spent,
+    total_budget,
+    monthly_total
+)
 
-    current_month = monthly_total["Amount"].iloc[-1]
-    previous_month = monthly_total["Amount"].iloc[-2]
-
-    difference = current_month - previous_month
-
-    if previous_month != 0:
-        percent_change = (difference / previous_month) * 100
-    else:
-        percent_change = 0
-
-    if difference > 0:
-        st.warning(
-            f"Your spending increased by {percent_change:.1f}% compared to last month."
-        )
-    elif difference < 0:
-        st.success(
-            f"Your spending decreased by {abs(percent_change):.1f}% compared to last month."
-        )
-    else:
-        st.info("Your spending stayed the same as last month.")
+for insight in insights:
+    st.markdown(f"- {insight}")
 
 
 
