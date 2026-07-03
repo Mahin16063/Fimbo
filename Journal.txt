@@ -1,0 +1,7 @@
+This is for me to read in case I get busy and do not touch this project in a while, so I don't completely lose the mental map
+
+1. For now, main.py scans 'data' folder for a csv file containing expense info and gives an overall summary using speech.
+    - to test, move to dir and try 'python main.py'
+2. dashboard.py creates a locally hosted website using streamlit to visualize the data using tables, charts and overviews.
+    - to test, move to dir and try 'streamlit run dashboard.py'
+
