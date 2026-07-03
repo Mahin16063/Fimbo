@@ -6,6 +6,7 @@ from config import DATA_FOLDER, BUDGETS
 from file_scanner import find_latest_excel_file
 from analyzer import analyze_expenses, analyze_monthly_trends
 from insight import generate_insights
+from predictor import predict_month_end
 
 plt.rcParams.update({
     "text.color": "white",
@@ -168,6 +169,44 @@ insights = generate_insights(
 
 for insight in insights:
     st.markdown(f"- {insight}")
+
+# =========================
+# PREDICTIONS
+# =========================
+
+prediction = predict_month_end(latest_file, BUDGETS)
+
+st.subheader("🔮 Orchid's Forecast")
+
+if prediction:
+
+    predicted = prediction["predicted_total"]
+
+    budget = prediction["budget"]
+
+    if predicted > budget:
+
+        st.error(
+            f"At your current spending pace, "
+            f"you are projected to spend "
+            f"${predicted:.2f}, exceeding your "
+            f"budget by ${predicted-budget:.2f}."
+        )
+
+    else:
+
+        st.success(
+            f"You're projected to spend "
+            f"${predicted:.2f} this month, "
+            f"leaving approximately "
+            f"${budget-predicted:.2f} remaining."
+        )
+
+    st.metric(
+        "Average Daily Spending",
+        f"${prediction['average_daily']:.2f}"
+    )
+
 
 
 
