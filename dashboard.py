@@ -7,6 +7,8 @@ from analyzer import analyze_expenses, analyze_monthly_trends
 from insight import generate_insights
 from predictor import predict_month_end
 from data_loader import load_finance_data
+from features import extract_features
+from dataset_builder import build_training_dataset
 
 plt.rcParams.update({
     "text.color": "white",
@@ -36,6 +38,8 @@ results, total_spent, total_budget = analyze_expenses(
     transactions,
     budgets
 )
+
+
 
 # =========================
 # TOP METRICS
@@ -75,6 +79,13 @@ for category, data in results.items():
 table_df = pd.DataFrame(table_data)
 
 st.dataframe(table_df)
+
+features = extract_features(df, budgets)
+
+# temporary display of extracted features for debugging purposes
+st.subheader("🧪 Extracted Features")
+
+st.json(features)
 
 # =========================
 # CHARTS    
@@ -124,6 +135,17 @@ with chart_col2:
         spine.set_color("white")
 
     st.pyplot(fig2, transparent=True)
+
+
+# =========================
+# MONTHLY DATA FEATURES
+# =========================
+
+training_df = build_training_dataset(df, budgets)
+
+st.subheader("Training Dataset")
+
+st.dataframe(training_df)
 
 
 # =========================

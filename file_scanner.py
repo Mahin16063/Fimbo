@@ -1,4 +1,7 @@
 from pathlib import Path
+"""
+This file was used to scan the data folder for the latest Excel file. It is no longer used in the current implementation, but it may be useful for future reference or modifications.
+"""
 
 def find_latest_excel_file(folder: Path):
     """
