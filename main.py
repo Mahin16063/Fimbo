@@ -1,16 +1,19 @@
-from config import DATA_FOLDER, BUDGETS
+from config import DATA_FOLDER, BUDGETS, FINANCE_FOLDER
 from file_scanner import find_latest_excel_file
 from analyzer import analyze_expenses
 from voice import speak
+from data_loader import load_finance_data
 
 def main():
     speak("Welcome back Mahin. I am scanning your finance folder now.")
 
     try:
-        latest_file = find_latest_excel_file(DATA_FOLDER)
-        speak(f"I found your latest finance file: {latest_file.name}")
+        transactions, budgets, workbook = load_finance_data(FINANCE_FOLDER)
 
-        results, total_spent, total_budget = analyze_expenses(latest_file, BUDGETS)
+        results, total_spent, total_budget = analyze_expenses(
+            transactions,
+            budgets
+        )
 
         speak(f"Your total spending is {total_spent:.2f} dollars out of a total budget of {total_budget:.2f} dollars.")
 

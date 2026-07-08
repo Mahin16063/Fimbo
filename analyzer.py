@@ -1,9 +1,7 @@
 import pandas as pd
 
 # This function reads an Excel file containing expense data, analyzes it against predefined budgets, and returns a summary of spending by category along with total spending and budget information.
-def analyze_expenses(file_path, budgets):
-    df = pd.read_excel(file_path)
-
+def analyze_expenses(df, budgets):
     required_columns = [
         "Transaction Date",
         "Transaction Type",
@@ -36,9 +34,7 @@ def analyze_expenses(file_path, budgets):
 
     return results, total_spent, total_budget
 
-def analyze_monthly_trends(file_path):
-    df = pd.read_excel(file_path)
-
+def analyze_monthly_trends(df):
     df["Transaction Date"] = pd.to_datetime(df["Transaction Date"])
     df["Month"] = df["Transaction Date"].dt.to_period("M")
 

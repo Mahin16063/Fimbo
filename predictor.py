@@ -3,8 +3,8 @@ import calendar
 from datetime import datetime
 
 
-def predict_month_end(file_path, budgets):
-    df = pd.read_excel(file_path)
+def predict_month_end(df, budgets):
+    df = df.copy()
 
     df["Transaction Date"] = pd.to_datetime(df["Transaction Date"])
 

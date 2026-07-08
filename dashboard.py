@@ -2,11 +2,11 @@ import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
 
-from config import DATA_FOLDER, BUDGETS
-from file_scanner import find_latest_excel_file
+from config import FINANCE_FOLDER
 from analyzer import analyze_expenses, analyze_monthly_trends
 from insight import generate_insights
 from predictor import predict_month_end
+from data_loader import load_finance_data
 
 plt.rcParams.update({
     "text.color": "white",
@@ -28,13 +28,13 @@ st.markdown(
     """
 )
 
-latest_file = find_latest_excel_file(DATA_FOLDER)
+transactions, budgets, workbook = load_finance_data(FINANCE_FOLDER)
 
-df = pd.read_excel(latest_file)
+df = transactions
 
 results, total_spent, total_budget = analyze_expenses(
-    latest_file,
-    BUDGETS
+    transactions,
+    budgets
 )
 
 # =========================
@@ -129,7 +129,7 @@ with chart_col2:
 # =========================
 # MONTHLY TRENDS
 # =========================
-monthly_total, monthly_category = analyze_monthly_trends(latest_file)
+monthly_total, monthly_category = analyze_monthly_trends(df)
 
 st.subheader("Monthly Spending Trend")
 
@@ -174,7 +174,7 @@ for insight in insights:
 # PREDICTIONS
 # =========================
 
-prediction = predict_month_end(latest_file, BUDGETS)
+prediction = predict_month_end(df, budgets)
 
 st.subheader("🔮 Orchid's Forecast")
 
