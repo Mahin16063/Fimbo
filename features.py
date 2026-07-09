@@ -1,5 +1,15 @@
 import pandas as pd
 
+CATEGORY_COLUMNS = [
+    "Food",
+    "Rent",
+    "Transport",
+    "Shopping",
+    "Entertainment",
+    "Subscription",
+    "Misc"
+]
+
 
 def extract_features(df, budgets):
 
@@ -71,15 +81,25 @@ def extract_features(df, budgets):
         .sum()
     )
 
-    for category, amount in category_totals.items():
+    category_totals = (
+        df.groupby("Category")["Amount"]
+        .sum()    
+    )
 
-        key = (
-            category
-            .lower()
-            .replace(" ", "_")
-            + "_percentage"
+    for category in CATEGORY_COLUMNS:
+
+        amount = category_totals.get(category, 0)
+
+        features[
+            category.lower() + "_percentage"
+        ] = (
+            amount / total_spent
+            if total_spent > 0
+            else 0
         )
 
-        features[key] = amount / total_spent
+    features["over_budget"] = (
+        total_spent > total_budget
+    )
 
     return features
