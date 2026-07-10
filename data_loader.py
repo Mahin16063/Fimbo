@@ -12,21 +12,27 @@ MONTHS = [
     "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
 ]
 
-def load_finance_data(folder: Path):
+def load_finance_data(path: Path):
 
-    excel_files = [
-        f for f in folder.glob("*.xlsx")
-        if not f.name.startswith("~$")
-    ]
+    if path.is_file():
 
-    if not excel_files:
-        raise FileNotFoundError("No yearly workbook found.")
+        workbook = path
 
-    workbook = sorted(
-        excel_files,
-        key=lambda f: f.stat().st_mtime,
-        reverse=True
-    )[0]
+    else:
+
+        excel_files = [
+            f
+            for f in path.glob("*.xlsx")
+            if not f.name.startswith("~$")
+        ]
+
+        if not excel_files:
+            raise FileNotFoundError("No yearly workbook found.")
+
+        workbook = max(
+            excel_files,
+            key=lambda f: f.stat().st_mtime
+        )
 
     # ---------- Read Budget ----------
     budget_df = pd.read_excel(workbook, sheet_name="Budget")
